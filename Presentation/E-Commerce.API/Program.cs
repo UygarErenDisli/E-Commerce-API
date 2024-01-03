@@ -1,4 +1,8 @@
+using E_Commerce.Application.Validators.Products;
+using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
+using FluentValidation.AspNetCore;
+
 var MyAllowOrigins = "FrontendOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +18,11 @@ builder.Services.AddCors(options =>
 	});
 });
 
-builder.Services.AddControllers();
+builder.Services
+	.AddControllers(configuration => configuration.Filters.Add<ValidationFilter>())
+	.AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
+	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -24,7 +32,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseDeveloperExceptionPage();
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
