@@ -1,5 +1,8 @@
 ﻿using E_Commerce.Application.Repositories;
+using E_Commerce.Application.ViewModels.Products;
+using E_Commerce.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace E_Commerce.API.Controllers
 {
@@ -10,56 +13,60 @@ namespace E_Commerce.API.Controllers
 		private readonly IProductReadRepository _productReadRepository;
 		private readonly IProductWriteRepository _productWriteRepository;
 
-		private readonly IOrderReadRepository _orderReadRepository;
-		private readonly IOrderWriteRepository _orderWriteRepository;
-
-		private readonly ICustomerReadRepository _customerReadRepository;
-		private readonly ICustomerWriteRepository _customerWriteRepository;
-
-		public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IOrderReadRepository orderReadRepository, IOrderWriteRepository orderWriteRepository, ICustomerReadRepository customerReadRepository, ICustomerWriteRepository customerWriteRepository)
+		public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
 		{
 			_productReadRepository = productReadRepository;
 			_productWriteRepository = productWriteRepository;
-			_orderReadRepository = orderReadRepository;
-			_orderWriteRepository = orderWriteRepository;
-			_customerReadRepository = customerReadRepository;
-			_customerWriteRepository = customerWriteRepository;
 		}
 
 		[HttpGet]
-		public async Task<ActionResult> Get()
+		public async Task<IActionResult> Get()
 		{
-			//await _productWriteRepository.AddRangeAsync(new()
-			//{
-			//	new(){Id = Guid.NewGuid(),Name="Test Product 1",Price=10,Stock=10},
-			//	new(){Id = Guid.NewGuid(),Name="Test Product 2",Price=12,Stock=10},
-			//	new(){Id = Guid.NewGuid(),Name="Test Product 3",Price=13,Stock=10},
-			//	new(){Id = Guid.NewGuid(),Name="Test Product 4",Price=14,Stock=10},
-			//	new(){Id = Guid.NewGuid(),Name="Test Product 5",Price=15,Stock=10}
-			//});
-			//var products = _productReadRepository.GetAll(false);
-			//await _customerWriteRepository.AddAsync(
-			//	new() { Id = customerid, Name = "Uygar" });
-			//var customer = _customerReadRepository.GetAll();
+			return Ok(_productReadRepository.GetAll(false));
+		}
 
-			//var customerid = "73ff67ae-9155-4355-8dca-746133d6c194";
-			//var address = new Address() { City = "Istanbul", Country = "Turkey", State = "Turkey", Street = "Zafer", ZipCode = "10012" };
-			//await _orderWriteRepository.AddAsync(new()
-			//{
-			//	Id = Guid.NewGuid(),
-			//	Address = address,
-			//	CustomerId = Guid.Parse(customerid),
-			//	Description = "Test Order"
-			//});
-			//await _productWriteRepository.SaveAsync();
+		[HttpGet("{id}")]
+		public async Task<IActionResult> Get(string id)
+		{
+			return Ok(await _productReadRepository.GetByIdAsync(id));
+		}
 
-			var customer = _customerReadRepository.GetAll().First();
-			customer.Name = "Uygar Updated";
-			_customerWriteRepository.Update(customer);
-			await _customerWriteRepository.SaveAsync();
+		[HttpPost]
+		public async Task<IActionResult> Post(CreateProductVM model)
+		{
+			Product product = new()
+			{
+				Name = model.Name,
+				Stock = model.Stock,
+				Price = model.Price
+			};
+			await _productWriteRepository.AddAsync(product);
+			await _productWriteRepository.SaveAsync();
+			return Ok((int)HttpStatusCode.Created);
+		}
 
-			//var orders = _orderReadRepository.GetAll();
+		[HttpPut]
+		public async Task<IActionResult> Put(UpdateProductVM model)
+		{
+			Product product = await _productReadRepository.GetByIdAsync(model.Id);
 
+			product.Name = model.Name;
+			product.Stock = model.Stock;
+			product.Price = model.Price;
+
+			_productWriteRepository.Update(product);
+			await _productWriteRepository.SaveAsync();
+
+			return Ok();
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(string id)
+		{
+			Product product = await _productReadRepository.GetByIdAsync(id);
+
+			_productWriteRepository.Remove(product);
+			await _productWriteRepository.SaveAsync();
 			return Ok();
 		}
 	}
