@@ -1,4 +1,5 @@
 using E_Commerce.Application.Validators.Products;
+using E_Commerce.Infrastructure;
 using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
 using FluentValidation.AspNetCore;
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("PostgreSQL")!);
+
+builder.Services.AddInfrastractureServices();
 
 builder.Services.AddCors(options =>
 {
@@ -35,7 +38,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowOrigins);

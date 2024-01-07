@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Application.Repositories;
 using E_Commerce.Application.RequiestParameters;
+using E_Commerce.Application.Services;
 using E_Commerce.Application.ViewModels.Products;
 using E_Commerce.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,18 @@ namespace E_Commerce.API.Controllers
 	{
 		private readonly IProductReadRepository _productReadRepository;
 		private readonly IProductWriteRepository _productWriteRepository;
+		private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly IFileService _fileService;
 
-		public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
+		public ProductsController(IProductReadRepository productReadRepository,
+			IProductWriteRepository productWriteRepository,
+			IWebHostEnvironment webHostEnvironment,
+			IFileService fileService)
 		{
 			_productReadRepository = productReadRepository;
 			_productWriteRepository = productWriteRepository;
+			_webHostEnvironment = webHostEnvironment;
+			_fileService = fileService;
 		}
 
 		[HttpGet]
@@ -80,6 +88,15 @@ namespace E_Commerce.API.Controllers
 
 			_productWriteRepository.Remove(product);
 			await _productWriteRepository.SaveAsync();
+			return Ok();
+		}
+
+
+		[HttpPost("[action]")]
+		public async Task<IActionResult> Upload()
+		{
+			await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
+
 			return Ok();
 		}
 	}
