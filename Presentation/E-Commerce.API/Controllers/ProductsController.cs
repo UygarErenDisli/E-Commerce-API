@@ -1,7 +1,6 @@
 ﻿using E_Commerce.Application.Abstractions;
 using E_Commerce.Application.Repositories;
 using E_Commerce.Application.RequiestParameters;
-using E_Commerce.Application.Services;
 using E_Commerce.Application.ViewModels.Products;
 using E_Commerce.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -17,18 +16,29 @@ namespace E_Commerce.API.Controllers
 		private readonly IProductWriteRepository _productWriteRepository;
 		private readonly IWebHostEnvironment _webHostEnvironment;
 		private readonly IStorageService _storageService;
-		private readonly IFileService _fileService;
+		private readonly IFileReadRepository _fileReadRepository;
+		private readonly IFileWriteRepository _fileWriteRepository;
+		private readonly IProductImageFileReadRepository _productImageFileReadRepository;
+		private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
 
 		public ProductsController(
 			IProductReadRepository productReadRepository,
 			IProductWriteRepository productWriteRepository,
 			IWebHostEnvironment webHostEnvironment,
-			IStorageService storageService)
+			IStorageService storageService,
+			IFileReadRepository fileReadRepository,
+			IFileWriteRepository fileWriteRepository,
+			IProductImageFileReadRepository productImageFileReadRepository,
+			IProductImageFileWriteRepository productImageFileWriteRepository)
 		{
 			_productReadRepository = productReadRepository;
 			_productWriteRepository = productWriteRepository;
 			_webHostEnvironment = webHostEnvironment;
 			_storageService = storageService;
+			_fileReadRepository = fileReadRepository;
+			_fileWriteRepository = fileWriteRepository;
+			_productImageFileReadRepository = productImageFileReadRepository;
+			_productImageFileWriteRepository = productImageFileWriteRepository;
 		}
 
 		[HttpGet]
@@ -98,8 +108,16 @@ namespace E_Commerce.API.Controllers
 		[HttpPost("[action]")]
 		public async Task<IActionResult> Upload()
 		{
-			await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
+			var datas = await _storageService.UploadAsync("files", Request.Form.Files);
 
+			await _productImageFileWriteRepository.AddRangeAsync(datas.Select(f => new ProductImageFile()
+			{
+				FileName = f.fileName,
+				Path = f.path,
+				Storage = _storageService.StorageName,
+			}).ToList());
+
+			await _productImageFileWriteRepository.SaveAsync();
 			return Ok();
 		}
 	}

@@ -1,6 +1,6 @@
 using E_Commerce.Application.Validators.Products;
 using E_Commerce.Infrastructure;
-using E_Commerce.Infrastructure.Services.Storage.Local;
+using E_Commerce.Infrastructure.Services.Storage.Azure;
 using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
 using FluentValidation.AspNetCore;
@@ -13,7 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("PostgreSQL")!);
 
 builder.Services.AddInfrastractureServices();
-builder.Services.AddStorage<LocalStorage>();
+//builder.Services.AddStorage<LocalStorage>();
+builder.Services.AddStorage<AzureStorage>();
+
 
 builder.Services.AddCors(options =>
 {
