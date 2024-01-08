@@ -1,4 +1,5 @@
-﻿using E_Commerce.Application.Repositories;
+﻿using E_Commerce.Application.Abstractions;
+using E_Commerce.Application.Repositories;
 using E_Commerce.Application.RequiestParameters;
 using E_Commerce.Application.Services;
 using E_Commerce.Application.ViewModels.Products;
@@ -15,17 +16,19 @@ namespace E_Commerce.API.Controllers
 		private readonly IProductReadRepository _productReadRepository;
 		private readonly IProductWriteRepository _productWriteRepository;
 		private readonly IWebHostEnvironment _webHostEnvironment;
+		private readonly IStorageService _storageService;
 		private readonly IFileService _fileService;
 
-		public ProductsController(IProductReadRepository productReadRepository,
+		public ProductsController(
+			IProductReadRepository productReadRepository,
 			IProductWriteRepository productWriteRepository,
 			IWebHostEnvironment webHostEnvironment,
-			IFileService fileService)
+			IStorageService storageService)
 		{
 			_productReadRepository = productReadRepository;
 			_productWriteRepository = productWriteRepository;
 			_webHostEnvironment = webHostEnvironment;
-			_fileService = fileService;
+			_storageService = storageService;
 		}
 
 		[HttpGet]
@@ -95,7 +98,7 @@ namespace E_Commerce.API.Controllers
 		[HttpPost("[action]")]
 		public async Task<IActionResult> Upload()
 		{
-			await _fileService.UploadAsync("resource/product-images", Request.Form.Files);
+			await _storageService.UploadAsync("resource/product-images", Request.Form.Files);
 
 			return Ok();
 		}
