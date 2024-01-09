@@ -41,6 +41,7 @@
 			   .Replace("ç", "c")
 			   .Replace("<", "")
 			   .Replace(">", "")
+			   .Replace(" ", "-")
 			   .Replace("|", "");
 	}
 }
