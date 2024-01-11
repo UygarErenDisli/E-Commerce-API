@@ -1,3 +1,4 @@
+using E_Commerce.Application.Extentions;
 using E_Commerce.Application.Validators.Products;
 using E_Commerce.Infrastructure;
 using E_Commerce.Infrastructure.Services.Storage.Azure;
@@ -12,7 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("PostgreSQL")!);
 
+builder.Services.AddApplicationServices();
+
 builder.Services.AddInfrastractureServices();
+
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
 
