@@ -20,9 +20,10 @@ namespace E_Commerce.Application.Features.Commands.IdentityUser.CreateUser
 
 				Id = Guid.NewGuid().ToString(),
 				NameSurname = request.NameSurname,
+
 				UserName = request.UserName,
 				Email = request.Email
-			});
+			}, request.Password);
 
 			var response = new CreateUserCommandResponse() { Succeeded = result.Succeeded };
 
