@@ -1,11 +1,11 @@
-﻿using E_Commerce.Application.Abstractions;
+﻿using E_Commerce.Application.Abstractions.Storage;
 using E_Commerce.Application.Repositories;
 using E_Commerce.Domain.Entities;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.ProductImagesFile.UploadProductImages
 {
-	public class UploadProductImagesCommandHandler : IRequestHandler<UploadProductImagesCommandRequest, UploadProductImagesCommandResponse>
+    public class UploadProductImagesCommandHandler : IRequestHandler<UploadProductImagesCommandRequest, UploadProductImagesCommandResponse>
 	{
 		private readonly IProductReadRepository _productReadRepository;
 		private readonly IStorageService _storageService;

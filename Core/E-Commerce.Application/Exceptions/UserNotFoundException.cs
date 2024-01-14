@@ -2,7 +2,7 @@
 {
 	public class UserNotFoundException : Exception
 	{
-		public UserNotFoundException() : base("User Not Found!")
+		public UserNotFoundException() : base("Username or password is wrong")
 		{
 		}
 

@@ -5,6 +5,10 @@ using E_Commerce.Infrastructure.Services.Storage.Azure;
 using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var MyAllowOrigins = "FrontendOrigins";
 
@@ -38,6 +42,26 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services
+	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+	.AddJwtBearer("Admin", options =>
+	{
+		options.TokenValidationParameters = new()
+		{
+			ValidateAudience = true,
+			ValidateIssuer = true,
+			ValidateLifetime = true,
+			ValidateIssuerSigningKey = true,
+
+			ValidAudience = builder.Configuration["Token:Audience"],
+			ValidIssuer = builder.Configuration["Token:Issuer"],
+			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SigninKey"]!))
+
+		};
+	});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +74,8 @@ app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 app.UseCors(MyAllowOrigins);
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
