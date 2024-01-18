@@ -1,6 +1,6 @@
-﻿namespace E_Commerce.Application.Features.Commands.IdentityUser.LoginUser
+﻿namespace E_Commerce.Application.Features.Commands.IdentityUser.RefreshTokenLogin
 {
-	public class LoginUserCommandResponse
+	public class RefreshTokinLoginCommandResponse
 	{
 		public string AccessToken { get; set; }
 		public string RefreshToken { get; set; }

@@ -20,6 +20,7 @@ namespace E_Commerce.Application.Features.Commands.IdentityUser.GoogleLogin
 			return new()
 			{
 				AccessToken = response.AccessToken,
+				RefreshToken = response.RefreshToken,
 				Expiration = response.Expiration
 			};
 

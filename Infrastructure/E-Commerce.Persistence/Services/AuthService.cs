@@ -5,6 +5,7 @@ using E_Commerce.Application.Exceptions;
 using E_Commerce.Domain.Entities.Identity;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
 namespace E_Commerce.Persistence.Services
@@ -16,13 +17,15 @@ namespace E_Commerce.Persistence.Services
 		private readonly SignInManager<AppUser> _signInManager;
 		private readonly ITokenHandler _tokenHandler;
 		private readonly IConfiguration _configuration;
+		private readonly IUserService _userService;
 
-		public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IConfiguration configuration)
+		public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenHandler tokenHandler, IConfiguration configuration, IUserService userService)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_tokenHandler = tokenHandler;
 			_configuration = configuration;
+			_userService = userService;
 		}
 
 		public async Task<Token> LoginUser(string userNameOrEmail, string password, int accessTokenLifetimeInMinutes)
@@ -38,7 +41,9 @@ namespace E_Commerce.Persistence.Services
 
 			if (result.Succeeded)
 			{
-				return _tokenHandler.CreateAccessToken(accessTokenLifetimeInMinutes);
+				var token = _tokenHandler.CreateAccessToken(accessTokenLifetimeInMinutes);
+				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+				return token;
 			}
 			throw new UserNotFoundException();
 		}
@@ -89,10 +94,29 @@ namespace E_Commerce.Persistence.Services
 			}
 
 			var token = _tokenHandler.CreateAccessToken(accessTokenLifeTimeInMinutes);
-
+			await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expiration, 15);
 			return token;
 
 		}
 
+		public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+		{
+
+			var user = await _userManager.Users.FirstOrDefaultAsync(user => user.RefreshToken == refreshToken);
+			if (user == null)
+			{
+				throw new UserNotFoundException();
+			}
+			else if (user.RefreshTokenExpireDate > DateTime.UtcNow)
+			{
+				var token = _tokenHandler.CreateAccessToken(15);
+				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+				return token;
+			}
+			else
+			{
+				throw new RefreshTokenExpiredException();
+			}
+		}
 	}
 }
