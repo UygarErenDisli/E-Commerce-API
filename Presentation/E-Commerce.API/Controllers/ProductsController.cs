@@ -7,6 +7,7 @@ using E_Commerce.Application.Features.Quaries.ProductImagesFile.GetProductImages
 using E_Commerce.Application.Features.Quaries.Products.GetAllProducts;
 using E_Commerce.Application.Features.Quaries.Products.GetByIdProduct;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,6 +15,7 @@ namespace E_Commerce.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(AuthenticationSchemes = "Admin")]
 	public class ProductsController : ControllerBase
 	{
 
