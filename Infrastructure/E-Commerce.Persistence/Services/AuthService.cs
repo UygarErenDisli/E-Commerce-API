@@ -41,7 +41,7 @@ namespace E_Commerce.Persistence.Services
 
 			if (result.Succeeded)
 			{
-				var token = _tokenHandler.CreateAccessToken(accessTokenLifetimeInMinutes);
+				var token = _tokenHandler.CreateAccessToken(accessTokenLifetimeInMinutes, user);
 				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
 				return token;
 			}
@@ -93,7 +93,7 @@ namespace E_Commerce.Persistence.Services
 				throw new InvalidExternalUserAuthentication();
 			}
 
-			var token = _tokenHandler.CreateAccessToken(accessTokenLifeTimeInMinutes);
+			var token = _tokenHandler.CreateAccessToken(accessTokenLifeTimeInMinutes, appUser);
 			await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expiration, 15);
 			return token;
 
@@ -109,7 +109,7 @@ namespace E_Commerce.Persistence.Services
 			}
 			else if (user.RefreshTokenExpireDate > DateTime.UtcNow)
 			{
-				var token = _tokenHandler.CreateAccessToken(15);
+				var token = _tokenHandler.CreateAccessToken(15, user);
 				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
 				return token;
 			}

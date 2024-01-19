@@ -14,7 +14,7 @@ namespace E_Commerce.Application.Features.Commands.IdentityUser.LoginUser
 
 		public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
 		{
-			var response = await _internalAuthentication.LoginUser(request.UserNameOrEmail, request.Password, 15);
+			var response = await _internalAuthentication.LoginUser(request.UserNameOrEmail, request.Password, 300);
 
 			return new()
 			{
