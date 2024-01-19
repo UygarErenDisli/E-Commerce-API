@@ -1,4 +1,5 @@
 using E_Commerce.API.Configurations.Serilog;
+using E_Commerce.API.Extentions;
 using E_Commerce.Application.Extentions;
 using E_Commerce.Application.Validators.Products;
 using E_Commerce.Infrastructure;
@@ -102,10 +103,15 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+
+
 app.UseSerilogRequestLogging();
 
 app.UseStaticFiles();
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseCors(MyAllowOrigins);
 
