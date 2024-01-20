@@ -6,6 +6,7 @@ using E_Commerce.Infrastructure;
 using E_Commerce.Infrastructure.Services.Storage.Azure;
 using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
+using E_Commerce.SignaR.Extentions;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -28,6 +29,7 @@ builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionStrin
 builder.Services.AddApplicationServices();
 
 builder.Services.AddInfrastractureServices();
+builder.Services.AddSignalRServices();
 
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
@@ -37,7 +39,7 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy(MyAllowOrigins, policy =>
 	{
-		policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod();
+		policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowCredentials().AllowAnyMethod();
 	});
 });
 
@@ -133,5 +135,7 @@ app.Use(async (context, next) =>
 
 
 app.MapControllers();
+
+app.MapHubs();
 
 app.Run();
