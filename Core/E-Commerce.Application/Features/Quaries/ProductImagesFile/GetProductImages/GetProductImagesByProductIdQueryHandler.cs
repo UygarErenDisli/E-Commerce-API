@@ -24,7 +24,8 @@ namespace E_Commerce.Application.Features.Quaries.ProductImagesFile.GetProductIm
 			{
 				Id = i.Id,
 				Path = $"{_configuration["StorageBaseUrl"]}/{i.Path}",
-				FileName = i.FileName
+				FileName = i.FileName,
+				IsShowCaseImage = i.IsShowCaseImage
 			}).ToList();
 
 			return response ?? [];

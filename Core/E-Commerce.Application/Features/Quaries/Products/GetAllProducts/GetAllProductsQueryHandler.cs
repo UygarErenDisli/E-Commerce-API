@@ -21,16 +21,21 @@ namespace E_Commerce.Application.Features.Quaries.Products.GetAllProducts
 			var totalCount = _productReadRepository.GetAll().Count();
 			List<ListProductsDTO> products =
 			[
-				.. _productReadRepository.GetAll(false).Select(p => new ListProductsDTO
+				.. _productReadRepository
+				.GetAll(false)
+				.Skip((request.PageIndex * request.PageSize))
+				.Take(request.PageSize)
+				.Select(p => new ListProductsDTO
 				{
 					Id = $"{p.Id}",
 					Name = p.Name,
 					Stock = p.Stock,
 					Price = p.Price,
 					CreatedDate = p.CreatedDate,
-					UpdatedDate = p.UpdatedDate
+					UpdatedDate = p.UpdatedDate,
+					ProductImages = p.ProductImages
 
-				}).Skip((request.PageIndex * request.PageSize)).Take(request.PageSize),
+				})
 			];
 
 			return new() { Products = products, TotalCount = totalCount };

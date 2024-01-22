@@ -2,6 +2,7 @@
 {
 	public class ProductImageFile : File
 	{
+		public bool IsShowCaseImage { get; set; }
 		public ICollection<Product> Products { get; set; }
 	}
 }

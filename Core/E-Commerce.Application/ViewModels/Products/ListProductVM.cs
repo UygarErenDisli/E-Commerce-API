@@ -1,4 +1,6 @@
-﻿namespace E_Commerce.Application.ViewModels.Products
+﻿using E_Commerce.Domain.Entities;
+
+namespace E_Commerce.Application.ViewModels.Products
 {
 	public class ListProductVM
 	{
@@ -14,6 +16,7 @@
 		public decimal Price { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public DateTime UpdatedDate { get; set; }
+		public ICollection<ProductImageFile> ProductImages { get; set; }
 
 	}
 }
