@@ -9,5 +9,6 @@ namespace E_Commerce.Domain.Entities
 		public decimal Price { get; set; }
 		public ICollection<Order> Orders { get; set; }
 		public ICollection<ProductImageFile> ProductImages { get; set; }
+		public ICollection<BasketItem> BasketItems { get; set; }
 	}
 }

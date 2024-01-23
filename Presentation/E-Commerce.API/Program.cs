@@ -34,6 +34,7 @@ builder.Services.AddSignalRServices();
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {
