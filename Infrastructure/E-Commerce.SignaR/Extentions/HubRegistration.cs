@@ -8,6 +8,7 @@ namespace E_Commerce.SignaR.Extentions
 		public static void MapHubs(this WebApplication application)
 		{
 			application.MapHub<ProductHub>("/products/hub");
+			application.MapHub<OrderHub>("/orders/hub");
 		}
 	}
 }

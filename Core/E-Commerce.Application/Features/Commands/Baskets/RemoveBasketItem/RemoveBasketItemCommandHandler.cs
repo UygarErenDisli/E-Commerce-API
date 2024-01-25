@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
+﻿using E_Commerce.Application.Abstractions.Services.Baskets;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Baskets.RemoveBasketItem
 {
-	public class RemoveBasketItemCommandHandler : IRequestHandler<RemoveBasketItemCommandRequest, RemoveBasketItemCommandResponse>
+    public class RemoveBasketItemCommandHandler : IRequestHandler<RemoveBasketItemCommandRequest, RemoveBasketItemCommandResponse>
 	{
 		private readonly IBasketService _basketService;
 

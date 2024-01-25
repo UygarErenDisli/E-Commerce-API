@@ -1,4 +1,4 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
+﻿using E_Commerce.Application.Abstractions.Services.Baskets;
 using E_Commerce.Application.Exceptions;
 using E_Commerce.Application.Repositories;
 using E_Commerce.Domain.Entities;
@@ -30,7 +30,7 @@ namespace E_Commerce.Persistence.Services
 			_basketReadRepository = basketReadRepository;
 		}
 
-		private async Task<Basket> GetCurrentBasketAsync()
+		public async Task<Basket> GetActiveBasketAsync()
 		{
 			var username = _httpContextAccessor?.HttpContext?.User?.Identity?.Name;
 			if (!string.IsNullOrEmpty(username))
@@ -72,7 +72,7 @@ namespace E_Commerce.Persistence.Services
 
 		public async Task AddItemToBasketAsync(string productId, int quantity)
 		{
-			var basket = await GetCurrentBasketAsync();
+			var basket = await GetActiveBasketAsync();
 			if (basket != null)
 			{
 				var basketItem = await _basketItemReadRepository
@@ -102,7 +102,7 @@ namespace E_Commerce.Persistence.Services
 
 		public async Task<List<BasketItem>> GetBasketItemsAsync()
 		{
-			var currentBasket = await GetCurrentBasketAsync();
+			var currentBasket = await GetActiveBasketAsync();
 			if (currentBasket != null)
 			{
 				var includedBasket = await _basketReadRepository.Table

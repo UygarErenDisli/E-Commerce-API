@@ -1,6 +1,7 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
-using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services;
 using E_Commerce.Application.Abstractions.Services.Authentication;
+using E_Commerce.Application.Abstractions.Services.Baskets;
+using E_Commerce.Application.Abstractions.Services.Order;
 using E_Commerce.Application.Repositories;
 using E_Commerce.Domain.Entities.Identity;
 using E_Commerce.Persistence.Context;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Commerce.Persistence.Extentions
 {
-	public static class ServicesRegistration
+    public static class ServicesRegistration
 	{
 		public static void AddPersistenceServices(this IServiceCollection services, string connectionString)
 		{
@@ -59,6 +60,8 @@ namespace E_Commerce.Persistence.Extentions
 
 
 			services.AddScoped<IBasketService, BasketService>();
+
+			services.AddScoped<IOrderService, OrderService>();
 		}
 	}
 }

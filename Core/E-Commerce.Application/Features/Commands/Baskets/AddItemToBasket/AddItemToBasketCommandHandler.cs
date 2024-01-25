@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
+﻿using E_Commerce.Application.Abstractions.Services.Baskets;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Baskets.AddItemToBasket
 {
-	public class AddItemToBasketCommandHandler : IRequestHandler<AddItemToBasketCommandRequest, AddItemToBasketCommandResponse>
+    public class AddItemToBasketCommandHandler : IRequestHandler<AddItemToBasketCommandRequest, AddItemToBasketCommandResponse>
 	{
 		private readonly IBasketService _basketService;
 

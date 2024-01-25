@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
+﻿using E_Commerce.Application.Abstractions.Services.Baskets;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Quaries.Baskets.GetAllBasketItems
 {
-	public class GetAllBasketItemsQueryHandler : IRequestHandler<GetAllBasketItemsQueryRequest, List<GetAllBasketItemsQueryResponse>>
+    public class GetAllBasketItemsQueryHandler : IRequestHandler<GetAllBasketItemsQueryRequest, List<GetAllBasketItemsQueryResponse>>
 	{
 		private readonly IBasketService _basketService;
 

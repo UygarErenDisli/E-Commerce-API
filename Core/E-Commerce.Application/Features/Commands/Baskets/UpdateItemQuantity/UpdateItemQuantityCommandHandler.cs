@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Basket;
+﻿using E_Commerce.Application.Abstractions.Services.Baskets;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Baskets.UpdateItemQuantity
 {
-	public class UpdateItemQuantityCommandHandler : IRequestHandler<UpdateItemQuantityCommandRequest, UpdateItemQuantityCommandResponse>
+    public class UpdateItemQuantityCommandHandler : IRequestHandler<UpdateItemQuantityCommandRequest, UpdateItemQuantityCommandResponse>
 	{
 		private readonly IBasketService _basketService;
 

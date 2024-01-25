@@ -10,6 +10,8 @@ namespace E_Commerce.SignaR.Extentions
 		{
 			services.AddSignalR();
 			services.AddTransient<IProductHubService, ProductHubService>();
+
+			services.AddTransient<IOrderHubService, OrderHubService>();
 		}
 
 	}
