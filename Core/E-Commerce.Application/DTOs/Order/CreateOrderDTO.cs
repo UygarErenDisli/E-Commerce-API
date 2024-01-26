@@ -2,7 +2,7 @@
 {
 	public class CreateOrderDTO
 	{
-		public Guid BasketItemId { get; set; }
+		public Guid BasketId { get; set; }
 		public string Description { get; set; }
 		public string Street { get; set; }
 		public string City { get; set; }

@@ -22,7 +22,7 @@ namespace E_Commerce.Application.Features.Commands.Orders.CreateOrder
 		{
 			await _orderService.CreateOrderAsync(new()
 			{
-				BasketItemId = (await _basketService.GetActiveBasketAsync()).Id,
+				BasketId = (await _basketService.GetActiveBasketAsync()).Id,
 				City = request.City,
 				Country = request.Country
 					,

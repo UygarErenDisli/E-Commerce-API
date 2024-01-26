@@ -35,6 +35,8 @@ namespace E_Commerce.Persistence.Context
 
 			modelBuilder.Entity<Order>().OwnsOne(x => x.Address, a => a.WithOwner());
 
+			modelBuilder.Entity<Order>().HasIndex(o => o.OrderCode).IsUnique();
+
 			base.OnModelCreating(modelBuilder);
 		}
 
