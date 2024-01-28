@@ -1,5 +1,7 @@
 ﻿using E_Commerce.Application.Abstractions.Services.Order;
+using E_Commerce.Application.DTOs.BasketItem;
 using E_Commerce.Application.DTOs.Order;
+using E_Commerce.Application.Exceptions;
 using E_Commerce.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -71,6 +73,48 @@ namespace E_Commerce.Persistence.Services
 			numberGenerator.GetBytes(number);
 			return Convert.ToBase64String(number);
 
+		}
+
+		public async Task<SingleDetailedOrderDTO> GetOrderByIdAsync(string id)
+		{
+			var query = _orderReadRepository.Table
+				.Include(o => o.Basket)
+				.ThenInclude(b => b.BasketItems)
+				.ThenInclude(bi => bi.Product)
+				.Include(o => o.Basket)
+				.ThenInclude(b => b.User);
+
+			var data = await query.FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+			if (data == null)
+			{
+				throw new OrderNotFoundException();
+
+			}
+			return new()
+			{
+				Id = data.Id.ToString(),
+				OrderCode = data.OrderCode,
+				CreatedDate = data.CreatedDate,
+				Description = data.Description,
+				UserEmail = data.Basket.User.Email!,
+				UserName = data.Basket.User.UserName!,
+				TotalPrice = data.Basket.BasketItems.Sum(i => i.Product.Price * i.Quantity),
+				Address = new()
+				{
+					City = data.Address.City,
+					Country = data.Address.Country,
+					State = data.Address.State,
+					Street = data.Address.Street,
+					ZipCode = data.Address.ZipCode,
+				},
+				BasketItems = data.Basket.BasketItems.Select(bi => new BasketItemDTO()
+				{
+					Price = bi.Product.Price,
+					ProductId = bi.Product.Id.ToString(),
+					ProductName = bi.Product.Name,
+					Quantity = bi.Quantity
+				}).ToList(),
+			};
 		}
 	}
 }
