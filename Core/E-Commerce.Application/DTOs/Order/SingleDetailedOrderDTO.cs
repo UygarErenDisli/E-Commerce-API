@@ -11,6 +11,7 @@ namespace E_Commerce.Application.DTOs.Order
 		public string UserEmail { get; set; }
 		public decimal TotalPrice { get; set; }
 		public string Description { get; set; }
+		public bool IsCompleted { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public AddressDTO Address { get; set; }
 		public List<BasketItemDTO> BasketItems { get; set; }

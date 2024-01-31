@@ -8,6 +8,7 @@ namespace E_Commerce.Application.Abstractions.Services.Order
 		Task CreateOrderAsync(CreateOrderDTO createOrder);
 		Task<List<ListOrderDTO>> GetAllOrdersAsync(int pageIndex, int pageSize);
 		Task<SingleDetailedOrderDTO> GetOrderByIdAsync(string id);
+		Task CompleteOrderAsync(string id);
 
 	}
 }

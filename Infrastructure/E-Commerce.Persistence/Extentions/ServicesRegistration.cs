@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace E_Commerce.Persistence.Extentions
 {
-    public static class ServicesRegistration
+	public static class ServicesRegistration
 	{
 		public static void AddPersistenceServices(this IServiceCollection services, string connectionString)
 		{
@@ -51,6 +51,9 @@ namespace E_Commerce.Persistence.Extentions
 
 			services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
 			services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+
+			services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
+			services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
 			services.AddScoped<IUserService, UserService>();
 

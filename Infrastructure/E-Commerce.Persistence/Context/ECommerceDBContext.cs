@@ -21,6 +21,8 @@ namespace E_Commerce.Persistence.Context
 		public DbSet<InvoiceFile> InvoiceFiles { get; set; }
 		public DbSet<Basket> Baskets { get; set; }
 		public DbSet<BasketItem> BasketItems { get; set; }
+		public DbSet<CompletedOrder> CompletedOrders { get; set; }
+
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -35,7 +37,14 @@ namespace E_Commerce.Persistence.Context
 
 			modelBuilder.Entity<Order>().OwnsOne(x => x.Address, a => a.WithOwner());
 
-			modelBuilder.Entity<Order>().HasIndex(o => o.OrderCode).IsUnique();
+			modelBuilder.Entity<Order>()
+				.HasIndex(o => o.OrderCode)
+				.IsUnique();
+
+			modelBuilder.Entity<Order>()
+				.HasOne(o => o.CompletedOrder)
+				.WithOne(co => co.Order)
+				.HasForeignKey<CompletedOrder>();
 
 			base.OnModelCreating(modelBuilder);
 		}

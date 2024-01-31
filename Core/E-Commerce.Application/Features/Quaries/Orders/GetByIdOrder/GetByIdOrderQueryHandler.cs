@@ -26,7 +26,8 @@ namespace E_Commerce.Application.Features.Quaries.Orders.GetByIdOrder
 				UserEmail = orderDto.UserEmail,
 				UserName = orderDto.UserName,
 				Address = orderDto.Address,
-				BasketItems = orderDto.BasketItems
+				BasketItems = orderDto.BasketItems,
+				IsCompleted = orderDto.IsCompleted,
 			};
 		}
 	}

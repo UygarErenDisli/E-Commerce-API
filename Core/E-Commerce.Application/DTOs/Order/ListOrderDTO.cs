@@ -8,5 +8,6 @@
 		public string UserEmail { get; set; }
 		public decimal TotalPrice { get; set; }
 		public DateTime CreatedDate { get; set; }
+		public bool IsCompleted { get; set; }
 	}
 }
