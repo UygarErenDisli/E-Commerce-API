@@ -55,6 +55,9 @@ namespace E_Commerce.Persistence.Extentions
 			services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
 			services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
 
+			services.AddScoped<INotificationReadRepository, NotificationReadRepository>();
+			services.AddScoped<INotificationWriteRepository, NotificationWriteRepository>();
+
 			services.AddScoped<IUserService, UserService>();
 
 			services.AddScoped<IAuthService, AuthService>();
@@ -65,6 +68,7 @@ namespace E_Commerce.Persistence.Extentions
 			services.AddScoped<IBasketService, BasketService>();
 
 			services.AddScoped<IOrderService, OrderService>();
+			services.AddScoped<INotificationService, NotificationService>();
 		}
 	}
 }

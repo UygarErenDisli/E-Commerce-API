@@ -155,13 +155,33 @@ namespace E_Commerce.Persistence.Services
 			};
 		}
 
-		public async Task CompleteOrderAsync(string id)
+		public async Task<CompletedOrderDTO> CompleteOrderAsync(string id)
 		{
-			var order = await _orderReadRepository.GetByIdAsync(id);
+			var incluededOrders = _orderReadRepository.Table
+				.Include(o => o.Basket)
+				.ThenInclude(b => b.User);
+
+			var order = await incluededOrders.FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
 			if (order != null)
 			{
 				await _completedOrderWriteRepository.AddAsync(new() { OrderId = order.Id });
-				await _completedOrderWriteRepository.SaveAsync();
+				var result = await _completedOrderWriteRepository.SaveAsync();
+				if (result > 0)
+				{
+					return new()
+					{
+						OrderCode = order.OrderCode,
+						OrderDate = order.CreatedDate,
+						UserEmail = order.Basket.User.Email!,
+						UserId = order.Basket.UserId,
+						UserName = order.Basket.User.UserName!
+					};
+				}
+				else
+				{
+					throw new Exception("Unexpected error occurred");
+				}
 			}
 			else
 			{

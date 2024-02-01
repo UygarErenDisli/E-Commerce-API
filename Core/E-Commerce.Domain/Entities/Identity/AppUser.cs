@@ -8,5 +8,6 @@ namespace E_Commerce.Domain.Entities.Identity
 		public string? RefreshToken { get; set; }
 		public DateTime? RefreshTokenExpireDate { get; set; }
 		public ICollection<Basket> Baskets { get; set; }
+		public ICollection<Notification> Notifications { get; set; }
 	}
 }

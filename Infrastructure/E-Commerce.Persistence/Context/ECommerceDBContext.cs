@@ -22,6 +22,7 @@ namespace E_Commerce.Persistence.Context
 		public DbSet<Basket> Baskets { get; set; }
 		public DbSet<BasketItem> BasketItems { get; set; }
 		public DbSet<CompletedOrder> CompletedOrders { get; set; }
+		public DbSet<Notification> Notifications { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,6 +46,12 @@ namespace E_Commerce.Persistence.Context
 				.HasOne(o => o.CompletedOrder)
 				.WithOne(co => co.Order)
 				.HasForeignKey<CompletedOrder>();
+
+			modelBuilder.Entity<AppUser>()
+				.HasMany(u => u.Notifications)
+				.WithOne(n => n.User)
+				.HasForeignKey(n => n.UserId)
+				.IsRequired();
 
 			base.OnModelCreating(modelBuilder);
 		}
