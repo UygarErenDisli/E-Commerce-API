@@ -1,6 +1,6 @@
 ﻿using E_Commerce.Application.DTOs.Role;
 
-namespace E_Commerce.Application.Abstractions.Services
+namespace E_Commerce.Application.Abstractions.Services.Identity
 {
 	public interface IRoleService
 	{

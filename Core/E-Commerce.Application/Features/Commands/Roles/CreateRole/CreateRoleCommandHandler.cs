@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Roles.CreateRole
 {
-	public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommandRequest, CreateRoleCommandResponse>
+    public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommandRequest, CreateRoleCommandResponse>
 	{
 		private readonly IRoleService _roleService;
 

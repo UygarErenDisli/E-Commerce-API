@@ -1,4 +1,5 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Authentication;
+using E_Commerce.Application.Abstractions.Services.Identity;
 using E_Commerce.Application.Abstractions.Token;
 using E_Commerce.Application.DTOs;
 using E_Commerce.Application.Exceptions;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace E_Commerce.Persistence.Services
 {
 
-	public class AuthService : IAuthService
+    public class AuthService : IAuthService
 	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly SignInManager<AppUser> _signInManager;

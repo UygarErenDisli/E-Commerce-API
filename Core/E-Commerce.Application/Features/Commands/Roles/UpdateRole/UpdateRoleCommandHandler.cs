@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Roles.UpdateRole
 {
-	public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommandRequest, UpdateRoleCommandResponse>
+    public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommandRequest, UpdateRoleCommandResponse>
 	{
 		private readonly IRoleService _roleService;
 

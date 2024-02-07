@@ -12,11 +12,11 @@ namespace E_Commerce.Infrastructure.Services.Configurations
 {
 	public class ApplicationService : IApplicationService
 	{
-		public List<Menu> GetAuthorizeDefinitionEndpoints(Type type)
+		public List<MenuDTO> GetAuthorizeDefinitionEndpoints(Type type)
 		{
 			var currentAssembly = Assembly.GetAssembly(type) ?? throw new Exception("An Error Occured");
 			var controllers = currentAssembly.GetTypes().Where(t => t.IsAssignableTo(typeof(ControllerBase)));
-			List<Menu> output = [];
+			List<MenuDTO> output = [];
 			if (controllers != null)
 			{
 				foreach (var controller in controllers)
@@ -30,7 +30,7 @@ namespace E_Commerce.Infrastructure.Services.Configurations
 							var attributes = action.GetCustomAttributes(true);
 							if (attributes != null)
 							{
-								Menu? menu = null;
+								MenuDTO? menu = null;
 								var attribute = attributes.FirstOrDefault(a => a.GetType() == typeof(AuthorizeDefinitionAttribute)) as AuthorizeDefinitionAttribute;
 
 								if (!output.Any(m => m.Name == attribute!.Menu))

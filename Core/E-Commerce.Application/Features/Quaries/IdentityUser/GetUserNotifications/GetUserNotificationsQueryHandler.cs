@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Notification;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Quaries.IdentityUser.GetUserNotifications
 {
-	public class GetUserNotificationsQueryHandler : IRequestHandler<GetUserNotificationsQueryRequest, List<GetUserNotificationsQueryResponse>>
+    public class GetUserNotificationsQueryHandler : IRequestHandler<GetUserNotificationsQueryRequest, List<GetUserNotificationsQueryResponse>>
 	{
 		private readonly INotificationService _notificationService;
 

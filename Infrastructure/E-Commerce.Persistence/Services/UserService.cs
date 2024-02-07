@@ -1,4 +1,4 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using E_Commerce.Application.DTOs.User;
 using E_Commerce.Application.Exceptions;
 using E_Commerce.Domain.Entities.Identity;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace E_Commerce.Persistence.Services
 {
-	public class UserService : IUserService
+    public class UserService : IUserService
 	{
 		private readonly UserManager<AppUser> _userManager;
 

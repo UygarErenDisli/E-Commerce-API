@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.IdentityUser.CreateUser
 {
-	public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
 	{
 		private readonly IUserService _userService;
 

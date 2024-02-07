@@ -1,10 +1,10 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Roles.DeleteRole
 {
 
-	public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommandRequest, DeleteRoleCommandResponse>
+    public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommandRequest, DeleteRoleCommandResponse>
 	{
 		private readonly IRoleService _roleService;
 

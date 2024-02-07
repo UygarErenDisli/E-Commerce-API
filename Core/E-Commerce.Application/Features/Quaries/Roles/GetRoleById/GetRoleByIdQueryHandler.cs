@@ -1,9 +1,9 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Quaries.Roles.GetRoleById
 {
-	public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQueryRequest, GetRoleByIdQueryResponse>
+    public class GetRoleByIdQueryHandler : IRequestHandler<GetRoleByIdQueryRequest, GetRoleByIdQueryResponse>
 	{
 		private readonly IRoleService _roleService;
 

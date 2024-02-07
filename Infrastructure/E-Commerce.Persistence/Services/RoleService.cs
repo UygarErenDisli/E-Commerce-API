@@ -1,4 +1,4 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Identity;
 using E_Commerce.Application.DTOs.Role;
 using E_Commerce.Application.Exceptions;
 using E_Commerce.Domain.Entities.Identity;
@@ -15,20 +15,30 @@ namespace E_Commerce.Persistence.Services
 		{
 			_roleManager = roleManager;
 		}
+		/// <summary>
+		///   Asynchronously returns the roles with specified range. Or returns all roles If both of the parameters is -1
+		/// </summary>
+		/// <param name="pageIndex"></param>
+		/// <param name="pageSize"></param>
+		/// <returns>Retunrs <see cref="Task{TResult}"/></returns>
 		public async Task<ListRoleDTO> GetAllRolesAsync(int pageIndex, int pageSize)
 		{
 			var query = _roleManager.Roles;
+			var totalCount = await query.CountAsync();
+
+			if (pageIndex == -1 && pageSize == -1)
+			{
+				query.Skip(pageIndex * pageSize)
+				.Take(pageSize);
+			}
 
 			var roles = await query
-				.Skip(pageIndex * pageSize)
-				.Take(pageSize)
 				.Select(r => new RoleDTO()
 				{
 					Id = r.Id,
 					Name = r.Name ?? "Role name was empty"
 				}).ToListAsync();
 
-			var totalCount = await query.CountAsync();
 
 			return new()
 			{

@@ -1,10 +1,10 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Notification;
 using E_Commerce.Application.Abstractions.Services.Order;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.Orders.CompleteOrder
 {
-	public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommandRequest, CompleteOrderCommandResponse>
+    public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommandRequest, CompleteOrderCommandResponse>
 	{
 		private readonly IOrderService _orderService;
 		private readonly INotificationService _notificationService;
