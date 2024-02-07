@@ -1,4 +1,6 @@
-﻿using E_Commerce.Application.Features.Commands.IdentityUser.CreateUser;
+﻿using E_Commerce.Application.Attributes;
+using E_Commerce.Application.Consts;
+using E_Commerce.Application.Features.Commands.IdentityUser.CreateUser;
 using E_Commerce.Application.Features.Commands.IdentityUser.DeleteNotification;
 using E_Commerce.Application.Features.Quaries.IdentityUser.GetUserNotifications;
 using MediatR;
@@ -28,6 +30,7 @@ namespace E_Commerce.API.Controllers
 
 		[HttpGet]
 		[Authorize(AuthenticationSchemes = "Admin")]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Identity, ActionType = Application.Enums.ActionType.Reading, Definition = "Get User Notifications")]
 		public async Task<IActionResult> GetUserNotifications([FromQuery] GetUserNotificationsQueryRequest request)
 		{
 			var response = await _mediator.Send(request);

@@ -1,4 +1,6 @@
-﻿using E_Commerce.Application.Features.Commands.Orders.CompleteOrder;
+﻿using E_Commerce.Application.Attributes;
+using E_Commerce.Application.Consts;
+using E_Commerce.Application.Features.Commands.Orders.CompleteOrder;
 using E_Commerce.Application.Features.Commands.Orders.CreateOrder;
 using E_Commerce.Application.Features.Quaries.Orders.GetAllOrders;
 using E_Commerce.Application.Features.Quaries.Orders.GetByIdOrder;
@@ -11,7 +13,6 @@ namespace E_Commerce.API.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	[Authorize(AuthenticationSchemes = "Admin")]
-
 	public class OrdersController : ControllerBase
 	{
 		private readonly IMediator _mediator;
@@ -22,6 +23,7 @@ namespace E_Commerce.API.Controllers
 		}
 
 		[HttpGet]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Reading, Definition = "Get All Orders")]
 		public async Task<IActionResult> GetAllOrders([FromQuery] GetAllOrdersQueryRequest request)
 		{
 			var response = await _mediator.Send(request);
@@ -29,6 +31,7 @@ namespace E_Commerce.API.Controllers
 		}
 
 		[HttpGet("{Id}")]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Reading, Definition = "Get Order By Id")]
 		public async Task<IActionResult> GetOrderById([FromRoute] GetByIdOrderQueryRequest request)
 		{
 			var response = await _mediator.Send(request);
@@ -36,6 +39,7 @@ namespace E_Commerce.API.Controllers
 		}
 
 		[HttpPost("[action]")]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Updating, Definition = "Complete Order")]
 		public async Task<IActionResult> CompleteOrder(CompleteOrderCommandRequest request)
 		{
 			var response = await _mediator.Send(request);
@@ -44,6 +48,7 @@ namespace E_Commerce.API.Controllers
 
 
 		[HttpPost]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Writing, Definition = "Create Order")]
 		public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
 		{
 			var response = await _mediator.Send(request);
