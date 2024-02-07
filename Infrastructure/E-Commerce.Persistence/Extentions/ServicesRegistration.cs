@@ -1,6 +1,8 @@
-﻿using E_Commerce.Application.Abstractions.Services;
-using E_Commerce.Application.Abstractions.Services.Authentication;
+﻿using E_Commerce.Application.Abstractions.Services.Authentication;
+using E_Commerce.Application.Abstractions.Services.Authorization;
 using E_Commerce.Application.Abstractions.Services.Baskets;
+using E_Commerce.Application.Abstractions.Services.Identity;
+using E_Commerce.Application.Abstractions.Services.Notification;
 using E_Commerce.Application.Abstractions.Services.Order;
 using E_Commerce.Application.Repositories;
 using E_Commerce.Domain.Entities.Identity;
@@ -58,6 +60,13 @@ namespace E_Commerce.Persistence.Extentions
 			services.AddScoped<INotificationReadRepository, NotificationReadRepository>();
 			services.AddScoped<INotificationWriteRepository, NotificationWriteRepository>();
 
+
+			services.AddScoped<IMenuReadRepository, MenuReadRepository>();
+			services.AddScoped<IMenuWriteRepository, MenuWriteRepository>();
+
+			services.AddScoped<IEndpointReadRepository, EndpointReadRepository>();
+			services.AddScoped<IEndpointWriteRepository, EndpointWriteRepository>();
+
 			services.AddScoped<IUserService, UserService>();
 
 			services.AddScoped<IAuthService, AuthService>();
@@ -70,6 +79,9 @@ namespace E_Commerce.Persistence.Extentions
 			services.AddScoped<IOrderService, OrderService>();
 			services.AddScoped<INotificationService, NotificationService>();
 			services.AddScoped<IRoleService, RoleService>();
+			services.AddScoped<IAuthorizationEndpointService, AuthorizationEndpointService>();
+
+
 		}
 	}
 }

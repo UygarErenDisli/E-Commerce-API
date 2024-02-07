@@ -23,6 +23,8 @@ namespace E_Commerce.Persistence.Context
 		public DbSet<BasketItem> BasketItems { get; set; }
 		public DbSet<CompletedOrder> CompletedOrders { get; set; }
 		public DbSet<Notification> Notifications { get; set; }
+		public DbSet<Menu> Menus { get; set; }
+		public DbSet<Endpoint> Endpoints { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
