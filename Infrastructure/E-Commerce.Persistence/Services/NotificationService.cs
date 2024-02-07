@@ -1,4 +1,4 @@
-﻿using E_Commerce.Application.Abstractions.Services;
+﻿using E_Commerce.Application.Abstractions.Services.Notification;
 using E_Commerce.Application.DTOs.Notification;
 using E_Commerce.Application.Exceptions;
 using E_Commerce.Application.Repositories;
@@ -10,7 +10,7 @@ using System.Text;
 
 namespace E_Commerce.Persistence.Services
 {
-	public class NotificationService : INotificationService
+    public class NotificationService : INotificationService
 	{
 		private readonly INotificationReadRepository _notificationReadRepository;
 		private readonly INotificationWriteRepository _notificationWriteRepository;
