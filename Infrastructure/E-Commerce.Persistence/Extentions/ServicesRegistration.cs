@@ -69,6 +69,7 @@ namespace E_Commerce.Persistence.Extentions
 
 			services.AddScoped<IOrderService, OrderService>();
 			services.AddScoped<INotificationService, NotificationService>();
+			services.AddScoped<IRoleService, RoleService>();
 		}
 	}
 }
