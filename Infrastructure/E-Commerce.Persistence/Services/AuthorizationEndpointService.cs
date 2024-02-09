@@ -56,18 +56,6 @@ namespace E_Commerce.Persistence.Services
 			await AddRolesToEndpoint(roles, endpoint);
 			await _endpointWriteRepository.SaveAsync();
 		}
-
-		private async Task<Menu> CreateMenu(string menuName)
-		{
-			Menu menu = new()
-			{
-				Id = Guid.NewGuid(),
-				Name = menuName
-			};
-			await _menuWriteRepository.AddAsync(menu);
-			await _menuWriteRepository.SaveAsync();
-			return menu;
-		}
 		public async Task<List<RoleDTO>> GetRolesToEndpointAsync(string endpointCode, string menuName)
 		{
 			var endpoint = await _endpointReadRepository.Table
@@ -84,6 +72,17 @@ namespace E_Commerce.Persistence.Services
 				}).ToList();
 			}
 			return [];
+		}
+		private async Task<Menu> CreateMenu(string menuName)
+		{
+			Menu menu = new()
+			{
+				Id = Guid.NewGuid(),
+				Name = menuName
+			};
+			await _menuWriteRepository.AddAsync(menu);
+			await _menuWriteRepository.SaveAsync();
+			return menu;
 		}
 		private async Task<Endpoint> CreateEndpoint(string endpointCode, Menu menu, Application.DTOs.Configuration.Action action)
 		{
@@ -127,5 +126,6 @@ namespace E_Commerce.Persistence.Services
 				endpoint.Roles.Remove(role);
 			}
 		}
+
 	}
 }
