@@ -1,6 +1,5 @@
 using E_Commerce.API.Configurations.Serilog;
 using E_Commerce.API.Extentions;
-using E_Commerce.API.Filters;
 using E_Commerce.Application.Extentions;
 using E_Commerce.Application.Validators.Products;
 using E_Commerce.Infrastructure;
@@ -8,7 +7,6 @@ using E_Commerce.Infrastructure.Services.Storage.Azure;
 using E_Commerce.Infrastructure.Validators;
 using E_Commerce.Persistence.Extentions;
 using E_Commerce.SignaR.Extentions;
-using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -46,25 +44,11 @@ builder.Services.AddCors(options =>
 	});
 });
 
-//builder.Services
-//	.AddControllers(configuration =>
-//	{
-//		configuration.Filters.Add<ValidationFilter>();
-//		configuration.Filters.Add<RolePermissionFilter>();
-//	})
-//	.AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
-//	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 builder.Services
-	.AddControllers(configuration =>
-	{
-		configuration.Filters.Add<ValidationFilter>();
-		configuration.Filters.Add<RolePermissionFilter>();
-	})
+	.AddControllers(configuration => configuration.Filters.Add<ValidationFilter>())
+	.AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
 	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
-builder.Services.AddFluentValidationClientsideAdapters();
 
 Logger logger = new LoggerConfiguration()
 	.WriteTo.Console()

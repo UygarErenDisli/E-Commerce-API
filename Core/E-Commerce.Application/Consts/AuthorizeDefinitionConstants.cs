@@ -8,7 +8,6 @@
 		public const string Identity = "Identity";
 		public const string ApplicationService = "ApplicationService";
 		public const string Roles = "Roles";
-		public const string AuthorizationEndpoints = "AuthorizationEndpoints";
 	}
 }
 
