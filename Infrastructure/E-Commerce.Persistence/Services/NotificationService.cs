@@ -10,7 +10,7 @@ using System.Text;
 
 namespace E_Commerce.Persistence.Services
 {
-    public class NotificationService : INotificationService
+	public class NotificationService : INotificationService
 	{
 		private readonly INotificationReadRepository _notificationReadRepository;
 		private readonly INotificationWriteRepository _notificationWriteRepository;
@@ -28,7 +28,7 @@ namespace E_Commerce.Persistence.Services
 		public async Task CreateOrderCompletedNotificationAsync(OrderCompletedNotificationDTO model)
 		{
 			var subject = "Your Order Has Been Shipped";
-			var message = CreateNotificationMessage(model.UserName, model.OrderCode, model.OrderDate);
+			var message = CreateOrderCompletedNotificationMessage(model.UserName, model.OrderCode, model.OrderDate);
 
 			if (!string.IsNullOrEmpty(model.UserId))
 			{
@@ -46,11 +46,31 @@ namespace E_Commerce.Persistence.Services
 				throw new InvalidUserIdException("Invalid User Id");
 			}
 		}
+		public async Task CreateOrderCanceledNotificationAsync(OrderCanceledNotificationDTO notification)
+		{
+			var subject = "Order Cancellation Notification";
+			var message = CreateOrderCanceledNotificationMessage(notification.UserName, notification.OrderCode, notification.ReasonforCancellation, notification.OrderDate);
 
+			if (!string.IsNullOrEmpty(notification.UserId))
+			{
+				await _notificationWriteRepository.AddAsync(new()
+				{
+					Id = Guid.NewGuid(),
+					Message = message,
+					Subject = subject,
+					UserId = notification.UserId
+				});
+				await _notificationWriteRepository.SaveAsync();
+			}
+			else
+			{
+				throw new InvalidUserIdException("Invalid User Id");
+			}
+		}
 
 		public async Task<List<UserNotificationDTO>> GetUserNotificationsAsync()
 		{
-			var username = _httpContextAccessor.HttpContext?.User?.Identity?.Name!;
+			var username = _httpContextAccessor.HttpContext?.User.Identity?.Name!;
 			if (!string.IsNullOrEmpty(username))
 			{
 				var user = await _userManager.FindByNameAsync(username);
@@ -99,7 +119,7 @@ namespace E_Commerce.Persistence.Services
 			}
 		}
 
-		private string CreateNotificationMessage(string userName, string orderCode, DateTime orderDate)
+		private string CreateOrderCompletedNotificationMessage(string userName, string orderCode, DateTime orderDate)
 		{
 			StringBuilder builder = new();
 			builder.AppendLine($"Hello {userName}");
@@ -113,5 +133,17 @@ namespace E_Commerce.Persistence.Services
 		}
 
 
+		private string CreateOrderCanceledNotificationMessage(string userName, string orderCode, string reason, DateTime orderDate)
+		{
+			StringBuilder builder = new();
+			builder.AppendLine($"Hello {userName}");
+			builder.AppendLine();
+			builder.AppendLine($"We regret to inform you that your order [{orderCode}] has been canceled due to [{reason}].");
+			builder.AppendLine($"For any inquiries, please contact our customer support team at [XXXXXXXX].");
+			builder.AppendLine();
+			builder.AppendLine("Sincerely.");
+
+			return builder.ToString();
+		}
 	}
 }

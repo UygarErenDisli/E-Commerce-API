@@ -28,6 +28,8 @@ namespace E_Commerce.Application.Features.Quaries.Orders.GetByIdOrder
 				Address = orderDto.Address,
 				BasketItems = orderDto.BasketItems,
 				IsCompleted = orderDto.IsCompleted,
+				IsCanceled = orderDto.IsCanceled,
+				ReasonforCancellation = orderDto.ReasonforCancellation
 			};
 		}
 	}

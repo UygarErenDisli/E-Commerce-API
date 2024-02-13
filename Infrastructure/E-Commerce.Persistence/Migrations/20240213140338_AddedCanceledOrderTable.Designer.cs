@@ -3,6 +3,7 @@ using System;
 using E_Commerce.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace E_Commerce.Persistence.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240213140338_AddedCanceledOrderTable")]
+    partial class AddedCanceledOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,10 +104,6 @@ namespace E_Commerce.Persistence.Migrations
 
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");

@@ -18,7 +18,11 @@ namespace E_Commerce.Persistence.Extentions
 	{
 		public static void AddPersistenceServices(this IServiceCollection services, string connectionString)
 		{
-			services.AddDbContext<ECommerceDBContext>(options => options.UseNpgsql(connectionString));
+			services.AddDbContext<ECommerceDBContext>(options =>
+			{
+				options.UseNpgsql(connectionString);
+				options.EnableSensitiveDataLogging();
+			});
 
 			services.AddIdentity<AppUser, AppRole>(options =>
 			{
@@ -56,6 +60,9 @@ namespace E_Commerce.Persistence.Extentions
 
 			services.AddScoped<ICompletedOrderReadRepository, CompletedOrderReadRepository>();
 			services.AddScoped<ICompletedOrderWriteRepository, CompletedOrderWriteRepository>();
+
+			services.AddScoped<ICanceledOrderReadRepository, CanceledOrderReadRepository>();
+			services.AddScoped<ICanceledOrderWriteRepository, CanceledOrderWriteRepository>();
 
 			services.AddScoped<INotificationReadRepository, NotificationReadRepository>();
 			services.AddScoped<INotificationWriteRepository, NotificationWriteRepository>();

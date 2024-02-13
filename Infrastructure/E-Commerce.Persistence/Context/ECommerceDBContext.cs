@@ -22,6 +22,7 @@ namespace E_Commerce.Persistence.Context
 		public DbSet<Basket> Baskets { get; set; }
 		public DbSet<BasketItem> BasketItems { get; set; }
 		public DbSet<CompletedOrder> CompletedOrders { get; set; }
+		public DbSet<CanceledOrder> CanceledOrders { get; set; }
 		public DbSet<Notification> Notifications { get; set; }
 		public DbSet<Menu> Menus { get; set; }
 		public DbSet<Endpoint> Endpoints { get; set; }
@@ -48,6 +49,11 @@ namespace E_Commerce.Persistence.Context
 				.HasOne(o => o.CompletedOrder)
 				.WithOne(co => co.Order)
 				.HasForeignKey<CompletedOrder>();
+
+			modelBuilder.Entity<Order>()
+				.HasOne(o => o.CanceledOrder)
+				.WithOne(co => co.Order)
+				.HasForeignKey<CanceledOrder>();
 
 			modelBuilder.Entity<AppUser>()
 				.HasMany(u => u.Notifications)

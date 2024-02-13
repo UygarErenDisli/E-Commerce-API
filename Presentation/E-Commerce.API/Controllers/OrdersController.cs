@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Application.Attributes;
 using E_Commerce.Application.Consts;
+using E_Commerce.Application.Features.Commands.Orders.CancelOrder;
 using E_Commerce.Application.Features.Commands.Orders.CompleteOrder;
 using E_Commerce.Application.Features.Commands.Orders.CreateOrder;
 using E_Commerce.Application.Features.Quaries.Orders.GetAllOrders;
@@ -50,6 +51,14 @@ namespace E_Commerce.API.Controllers
 		[HttpPost]
 		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Writing, Definition = "Create Order")]
 		public async Task<IActionResult> CreateOrder(CreateOrderCommandRequest request)
+		{
+			var response = await _mediator.Send(request);
+			return Ok(response);
+		}
+
+		[HttpPut("[action]")]
+		[AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Orders, ActionType = Application.Enums.ActionType.Updating, Definition = "Cancel Order")]
+		public async Task<IActionResult> CancelOrder(CancelOrderCommandRequest request)
 		{
 			var response = await _mediator.Send(request);
 			return Ok(response);

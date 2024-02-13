@@ -9,5 +9,6 @@ namespace E_Commerce.Domain.Entities
 		public string Description { get; set; }
 		public Address Address { get; set; }
 		public CompletedOrder CompletedOrder { get; set; }
+		public CanceledOrder CanceledOrder { get; set; }
 	}
 }

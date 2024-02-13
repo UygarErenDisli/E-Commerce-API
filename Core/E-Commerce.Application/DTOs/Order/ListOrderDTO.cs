@@ -9,5 +9,6 @@
 		public decimal TotalPrice { get; set; }
 		public DateTime CreatedDate { get; set; }
 		public bool IsCompleted { get; set; }
+		public bool IsCanceled { get; set; }
 	}
 }

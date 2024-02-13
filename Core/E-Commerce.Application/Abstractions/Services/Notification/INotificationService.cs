@@ -2,11 +2,12 @@
 
 namespace E_Commerce.Application.Abstractions.Services.Notification
 {
-    public interface INotificationService
-    {
-        Task CreateOrderCompletedNotificationAsync(OrderCompletedNotificationDTO notification);
-        Task DeleteNotification(string notificationId);
-        Task<List<UserNotificationDTO>> GetUserNotificationsAsync();
-    }
+	public interface INotificationService
+	{
+		Task CreateOrderCompletedNotificationAsync(OrderCompletedNotificationDTO notification);
+		Task CreateOrderCanceledNotificationAsync(OrderCanceledNotificationDTO notification);
+		Task DeleteNotification(string notificationId);
+		Task<List<UserNotificationDTO>> GetUserNotificationsAsync();
+	}
 }
 
