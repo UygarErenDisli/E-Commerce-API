@@ -60,7 +60,19 @@ namespace E_Commerce.Persistence.Services
 			}
 			throw new RoleNotFoundException();
 		}
-
+		public async Task<RoleDTO> GetRoleByName(string roleName)
+		{
+			var role = await _roleManager.FindByNameAsync(roleName);
+			if (role != null)
+			{
+				return new()
+				{
+					Id = role.Id,
+					Name = role.Name!
+				};
+			}
+			throw new RoleNotFoundException();
+		}
 		public async Task<bool> CreateRole(string name)
 		{
 			if (!string.IsNullOrEmpty(name))

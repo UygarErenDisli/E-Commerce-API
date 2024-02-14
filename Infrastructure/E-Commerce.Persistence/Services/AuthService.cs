@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 namespace E_Commerce.Persistence.Services
 {
 
-    public class AuthService : IAuthService
+	public class AuthService : IAuthService
 	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly SignInManager<AppUser> _signInManager;
@@ -42,8 +42,10 @@ namespace E_Commerce.Persistence.Services
 
 			if (result.Succeeded)
 			{
+				var hasAccess = await HasAccessToAdminDashboardAsync(user);
 				var token = _tokenHandler.CreateAccessToken(accessTokenLifetimeInMinutes, user);
-				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 300);
+				token.HasAccessToAdminDashboard = hasAccess;
+				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
 				return token;
 			}
 			throw new UserNotFoundException();
@@ -95,11 +97,11 @@ namespace E_Commerce.Persistence.Services
 			}
 
 			var token = _tokenHandler.CreateAccessToken(accessTokenLifeTimeInMinutes, appUser);
-			await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expiration, 300);
+			token.HasAccessToAdminDashboard = await HasAccessToAdminDashboardAsync(appUser);
+			await _userService.UpdateRefreshToken(token.RefreshToken, appUser, token.Expiration, 15);
 			return token;
 
 		}
-
 		public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
 		{
 
@@ -111,13 +113,23 @@ namespace E_Commerce.Persistence.Services
 			else if (user.RefreshTokenExpireDate > DateTime.UtcNow)
 			{
 				var token = _tokenHandler.CreateAccessToken(15, user);
-				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 300);
+				await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
 				return token;
 			}
 			else
 			{
 				throw new RefreshTokenExpiredException();
 			}
+		}
+		private async Task<bool> HasAccessToAdminDashboardAsync(AppUser user)
+		{
+			var hasAccess = false;
+			var roles = await _userService.GetRolesToUserAsync(user.Id);
+			if (roles.Length > 0)
+			{
+				hasAccess = !roles.Any(r => r == "Customer");
+			}
+			return hasAccess;
 		}
 	}
 }

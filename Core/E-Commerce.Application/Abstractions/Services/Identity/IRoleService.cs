@@ -6,6 +6,7 @@ namespace E_Commerce.Application.Abstractions.Services.Identity
 	{
 		Task<ListRoleDTO> GetAllRolesAsync(int pageIndex, int pageSize);
 		Task<RoleDTO> GetRoleById(string id);
+		Task<RoleDTO> GetRoleByName(string roleName);
 		Task<bool> CreateRole(string name);
 		Task<bool> UpdateRole(string id, string newName);
 		Task<bool> DeleteRole(string id);

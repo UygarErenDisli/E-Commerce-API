@@ -13,11 +13,13 @@ namespace E_Commerce.Persistence.Services
 	{
 		private readonly UserManager<AppUser> _userManager;
 		private readonly IEndpointReadRepository _endpointReadRepository;
+		private readonly IRoleService _roleService;
 
-		public UserService(UserManager<AppUser> userManager, IEndpointReadRepository endpointReadRepository)
+		public UserService(UserManager<AppUser> userManager, IEndpointReadRepository endpointReadRepository, IRoleService roleService)
 		{
 			_userManager = userManager;
 			_endpointReadRepository = endpointReadRepository;
+			_roleService = roleService;
 		}
 
 		public async Task<ListUsersDTO> GetAllUsers(int pageIndex, int pageSize)
@@ -46,10 +48,11 @@ namespace E_Commerce.Persistence.Services
 
 		public async Task<CreateUserResponse> CreateUser(CreateUser model)
 		{
+			var userId = Guid.NewGuid().ToString();
 			var result = await _userManager.CreateAsync(new AppUser()
 			{
 
-				Id = Guid.NewGuid().ToString(),
+				Id = userId,
 				NameSurname = model.NameSurname,
 
 				UserName = model.UserName,
@@ -60,6 +63,11 @@ namespace E_Commerce.Persistence.Services
 
 			if (result.Succeeded)
 			{
+				var customerRole = await _roleService.GetRoleByName("customer");
+				if (customerRole != null)
+				{
+					await AssignRoleToUser(userId, customerRole);
+				}
 				response.Message = "Successfully created";
 			}
 			else
@@ -82,12 +90,12 @@ namespace E_Commerce.Persistence.Services
 		/// <param name="addOnAccessToken"> Time in minutes to add on access token date</param>
 		/// <returns>The <see cref="Task"/> that represents the asynchronous operation</returns>
 		/// <exception cref="UserNotFoundException"></exception>
-		public async Task UpdateRefreshToken(string refreshToken, AppUser? user, DateTime accessTokenDate, int addOnAccessToken)
+		public async Task UpdateRefreshToken(string refreshToken, AppUser? user, DateTime accessTokenDate, int addOnAccessTokenInMinutes)
 		{
 			if (user != null)
 			{
 				user.RefreshToken = refreshToken;
-				user.RefreshTokenExpireDate = accessTokenDate.AddSeconds(addOnAccessToken);
+				user.RefreshTokenExpireDate = accessTokenDate.AddMinutes(addOnAccessTokenInMinutes);
 
 				await _userManager.UpdateAsync(user);
 			}
@@ -97,12 +105,21 @@ namespace E_Commerce.Persistence.Services
 			}
 		}
 
+
+		public async Task AssignRoleToUser(string userId, RoleDTO role)
+		{
+			await AssignRolesToUser(userId, [role]);
+
+		}
 		public async Task AssignRolesToUser(string userId, List<RoleDTO>? roles)
 		{
 			var user = await _userManager.FindByIdAsync(userId) ?? throw new UserNotFoundException();
 
 			var userRoles = await _userManager.GetRolesAsync(user);
-			await _userManager.RemoveFromRolesAsync(user, userRoles);
+			if (roles != null && roles?.Count == 0)
+			{
+				await _userManager.RemoveFromRolesAsync(user, userRoles);
+			}
 			await _userManager.AddToRolesAsync(user, roles?.Select(r => r.Name)!);
 		}
 
@@ -161,5 +178,7 @@ namespace E_Commerce.Persistence.Services
 				return false;
 			}
 		}
+
+
 	}
 }

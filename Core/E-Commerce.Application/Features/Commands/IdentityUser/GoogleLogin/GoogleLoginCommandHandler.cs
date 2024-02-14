@@ -15,13 +15,14 @@ namespace E_Commerce.Application.Features.Commands.IdentityUser.GoogleLogin
 		public async Task<GoogleLoginCommandResponse> Handle(GoogleLoginCommandRequest request, CancellationToken cancellationToken)
 		{
 
-			var response = await _externalAuthentication.GoogleLogin(request.IdToken, 1500);
+			var response = await _externalAuthentication.GoogleLogin(request.IdToken, 60);
 
 			return new()
 			{
 				AccessToken = response.AccessToken,
 				RefreshToken = response.RefreshToken,
-				Expiration = response.Expiration
+				Expiration = response.Expiration,
+				HasAccessToAdminDashboard = response.HasAccessToAdminDashboard,
 			};
 
 		}

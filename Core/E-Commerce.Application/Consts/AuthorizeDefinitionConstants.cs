@@ -9,6 +9,7 @@
 		public const string ApplicationService = "ApplicationService";
 		public const string Roles = "Roles";
 		public const string AuthorizationEndpoints = "AuthorizationEndpoints";
+		public const string Notifications = "Notifications";
 	}
 }
 

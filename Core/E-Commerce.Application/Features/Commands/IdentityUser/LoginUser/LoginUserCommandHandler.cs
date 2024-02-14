@@ -14,13 +14,14 @@ namespace E_Commerce.Application.Features.Commands.IdentityUser.LoginUser
 
 		public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
 		{
-			var response = await _internalAuthentication.LoginUser(request.UserNameOrEmail, request.Password, 1500);
+			var response = await _internalAuthentication.LoginUser(request.UserNameOrEmail, request.Password, 60);
 
 			return new()
 			{
 				AccessToken = response.AccessToken,
 				RefreshToken = response.RefreshToken,
-				Expiration = response.Expiration
+				Expiration = response.Expiration,
+				HasAccessToAdminDashboard = response.HasAccessToAdminDashboard
 			};
 		}
 	}
