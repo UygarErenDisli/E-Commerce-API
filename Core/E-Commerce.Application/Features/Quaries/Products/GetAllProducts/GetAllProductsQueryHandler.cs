@@ -23,6 +23,7 @@ namespace E_Commerce.Application.Features.Quaries.Products.GetAllProducts
 			[
 				.. _productReadRepository
 				.GetAll(false)
+				.OrderBy(p => p.CreatedDate)
 				.Skip((request.PageIndex * request.PageSize))
 				.Take(request.PageSize)
 				.Select(p => new ListProductsDTO

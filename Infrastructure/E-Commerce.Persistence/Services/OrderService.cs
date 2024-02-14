@@ -223,6 +223,7 @@ namespace E_Commerce.Persistence.Services
 						 join ca in canceledOrderQuery
 						 on co.Id equals ca.Id into caJoinedTable
 						 from order in caJoinedTable.DefaultIfEmpty()
+						 orderby order.CreatedDate
 						 select new OrderQuery()
 						 {
 							 Id = order.Id,

@@ -1,11 +1,11 @@
-﻿using E_Commerce.Application.ViewModels.Products;
+﻿using E_Commerce.Application.Features.Commands.Products.CreateProduct;
 using FluentValidation;
 
 namespace E_Commerce.Application.Validators.Products
 {
-	public class CreateProductValidator : AbstractValidator<CreateProductVM>
+	public class CreateProductCommandRequestValidator : AbstractValidator<CreateProductCommandRequest>
 	{
-		public CreateProductValidator()
+		public CreateProductCommandRequestValidator()
 		{
 			RuleFor(p => p.Name)
 				.NotEmpty().NotNull().WithMessage("Plese enter a Name for your Product")
