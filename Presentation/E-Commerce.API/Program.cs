@@ -26,9 +26,9 @@ var MyAllowOrigins = "FrontendOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("PostgreSQL")!);
 
-builder.Services.AddApplicationServices();
 
 builder.Services.AddInfrastractureServices();
 builder.Services.AddSignalRServices();
@@ -63,7 +63,7 @@ builder.Services
 	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateProductValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductCommandRequestValidator>();
 builder.Services.AddFluentValidationClientsideAdapters();
 
 Logger logger = new LoggerConfiguration()
