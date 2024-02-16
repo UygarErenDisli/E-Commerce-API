@@ -18,17 +18,32 @@ namespace E_Commerce.Application.Features.Quaries.ProductImagesFile.GetProductIm
 
 		public async Task<List<GetProductImagesByProductIdQueryResponse>> Handle(GetProductImagesByProductIdQueryRequest request, CancellationToken cancellationToken)
 		{
-			var productFromDb = await _productWriteRepository.Table.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == Guid.Parse(request.Id));
+			var productFromDb = await _productWriteRepository.Table
+				.Include(p => p.ProductImages)
+				.FirstOrDefaultAsync(p => p.Id == Guid.Parse(request.Id));
 
-			List<GetProductImagesByProductIdQueryResponse>? response = productFromDb?.ProductImages.Select(i => new GetProductImagesByProductIdQueryResponse()
+			List<GetProductImagesByProductIdQueryResponse>? output;
+			if (!string.IsNullOrEmpty(_configuration["StorageBaseUrl"]))
 			{
-				Id = i.Id,
-				Path = $"{_configuration["StorageBaseUrl"]}/{i.Path}",
-				FileName = i.FileName,
-				IsShowCaseImage = i.IsShowCaseImage
-			}).ToList();
-
-			return response ?? [];
+				output = productFromDb?.ProductImages.Select(i => new GetProductImagesByProductIdQueryResponse()
+				{
+					Id = i.Id,
+					Path = $"{_configuration["StorageBaseUrl"]}/{i.Path}",
+					FileName = i.FileName,
+					IsShowCaseImage = i.IsShowCaseImage
+				}).ToList();
+			}
+			else
+			{
+				output = productFromDb?.ProductImages.Select(i => new GetProductImagesByProductIdQueryResponse()
+				{
+					Id = i.Id,
+					Path = i.Path,
+					FileName = i.FileName,
+					IsShowCaseImage = i.IsShowCaseImage
+				}).ToList();
+			}
+			return output ?? [];
 		}
 	}
 }

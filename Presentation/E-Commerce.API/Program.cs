@@ -46,14 +46,6 @@ builder.Services.AddCors(options =>
 	});
 });
 
-//builder.Services
-//	.AddControllers(configuration =>
-//	{
-//		configuration.Filters.Add<ValidationFilter>();
-//		configuration.Filters.Add<RolePermissionFilter>();
-//	})
-//	.AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
-//	.ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 builder.Services
 	.AddControllers(configuration =>
 	{

@@ -18,7 +18,7 @@ namespace E_Commerce.API.Controllers
 		public IActionResult GetBaseStorageUrl()
 		{
 
-			return Ok(new { baseStorageUrl = _configuration["StorageBaseUrl"] });
+			return Ok(new { baseStorageUrl = !string.IsNullOrEmpty(_configuration["StorageBaseUrl"]) ? _configuration["StorageBaseUrl"] : "" });
 		}
 	}
 }
