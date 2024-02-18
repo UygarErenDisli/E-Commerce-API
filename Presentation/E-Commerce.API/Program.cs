@@ -28,8 +28,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices(builder.Configuration.GetConnectionString("PostgreSQL")!);
-
-
 builder.Services.AddInfrastractureServices();
 builder.Services.AddSignalRServices();
 
@@ -58,24 +56,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductCommandRequestValidator>();
 builder.Services.AddFluentValidationClientsideAdapters();
 
-Logger logger = new LoggerConfiguration()
-	.WriteTo.Console()
-	.WriteTo.PostgreSQL(builder.Configuration.GetConnectionString("PostgreSQL")!, "Logs", needAutoCreateTable: true,
-		columnOptions: new Dictionary<string, ColumnWriterBase>
-		{
-			{"message",new RenderedMessageColumnWriter(NpgsqlDbType.Text)},
-			{"message_template",new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
-			{"level",new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
-			{"raise_date",new TimestampColumnWriter(NpgsqlDbType.Timestamp) },
-			{"exception",new ExceptionColumnWriter(NpgsqlDbType.Text) },
-			{"log_event",new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
-			{"user_name",new UserNameColumnWriter(NpgsqlDbType.Varchar) },
-			{"user_email",new UserEmailColumnWriter(NpgsqlDbType.Varchar) }
-		})
-	.Enrich.FromLogContext()
-	.MinimumLevel.Information()
-	.CreateLogger();
-
+Logger logger = CreateLogger(builder);
 
 builder.Host.UseSerilog(logger);
 
@@ -115,10 +96,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-
-
 app.UseSerilogRequestLogging();
-
 app.UseStaticFiles();
 app.UseHttpsRedirection();
 
@@ -142,9 +120,29 @@ app.Use(async (context, next) =>
 	await next();
 });
 
-
 app.MapControllers();
 
 app.MapHubs();
 
 app.Run();
+
+static Logger CreateLogger(WebApplicationBuilder builder)
+{
+	return new LoggerConfiguration()
+		.WriteTo.Console()
+		.WriteTo.PostgreSQL(builder.Configuration.GetConnectionString("PostgreSQL")!, "Logs", needAutoCreateTable: true,
+			columnOptions: new Dictionary<string, ColumnWriterBase>
+			{
+			{"message",new RenderedMessageColumnWriter(NpgsqlDbType.Text)},
+			{"message_template",new MessageTemplateColumnWriter(NpgsqlDbType.Text) },
+			{"level",new LevelColumnWriter(true, NpgsqlDbType.Varchar) },
+			{"raise_date",new TimestampColumnWriter(NpgsqlDbType.Timestamp) },
+			{"exception",new ExceptionColumnWriter(NpgsqlDbType.Text) },
+			{"log_event",new LogEventSerializedColumnWriter(NpgsqlDbType.Jsonb) },
+			{"user_name",new UserNameColumnWriter(NpgsqlDbType.Varchar) },
+			{"user_email",new UserEmailColumnWriter(NpgsqlDbType.Varchar) }
+			})
+		.Enrich.FromLogContext()
+		.MinimumLevel.Information()
+		.CreateLogger();
+}

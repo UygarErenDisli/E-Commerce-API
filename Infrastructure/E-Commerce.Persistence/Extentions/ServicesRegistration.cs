@@ -21,7 +21,6 @@ namespace E_Commerce.Persistence.Extentions
 			services.AddDbContext<ECommerceDBContext>(options =>
 			{
 				options.UseNpgsql(connectionString);
-				options.EnableSensitiveDataLogging();
 			});
 
 			services.AddIdentity<AppUser, AppRole>(options =>

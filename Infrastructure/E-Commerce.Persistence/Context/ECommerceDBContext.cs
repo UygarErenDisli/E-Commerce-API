@@ -237,6 +237,22 @@ namespace E_Commerce.Persistence.Context
 				  });
 			#endregion
 
+			#region ProductSeeding
+			var products = new List<Product>();
+			for (var i = 1; i < 13; i++)
+			{
+				products.Add(new()
+				{
+					Id = Guid.NewGuid(),
+					Name = $"Test Product {i}",
+					Price = i * 10,
+					Stock = i * 10,
+					CreatedDate = DateTime.UtcNow
+				});
+			}
+			modelBuilder.Entity<Product>().HasData(products);
+			#endregion
+
 		}
 
 		public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
