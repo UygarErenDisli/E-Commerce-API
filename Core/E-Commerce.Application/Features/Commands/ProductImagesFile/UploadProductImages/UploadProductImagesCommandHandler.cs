@@ -1,40 +1,27 @@
-﻿using E_Commerce.Application.Abstractions.Storage;
-using E_Commerce.Application.Repositories;
-using E_Commerce.Domain.Entities;
+﻿using E_Commerce.Application.Abstractions.Services.Product;
+using E_Commerce.Application.Abstractions.Storage;
 using MediatR;
 
 namespace E_Commerce.Application.Features.Commands.ProductImagesFile.UploadProductImages
 {
     public class UploadProductImagesCommandHandler : IRequestHandler<UploadProductImagesCommandRequest, UploadProductImagesCommandResponse>
-	{
-		private readonly IProductReadRepository _productReadRepository;
-		private readonly IStorageService _storageService;
-		private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+    {
+        private readonly IProductService _productService;
+        private readonly IStorageService _storageService;
 
-		public UploadProductImagesCommandHandler(IProductReadRepository productReadRepository, IStorageService storageService, IProductImageFileWriteRepository productImageFileWriteRepository)
-		{
-			_productReadRepository = productReadRepository;
-			_storageService = storageService;
-			_productImageFileWriteRepository = productImageFileWriteRepository;
-		}
+        public UploadProductImagesCommandHandler(IProductService productService, IStorageService storageService)
+        {
+            _productService = productService;
+            _storageService = storageService;
+        }
 
-		public async Task<UploadProductImagesCommandResponse> Handle(UploadProductImagesCommandRequest request, CancellationToken cancellationToken)
-		{
-			var productFromDb = await _productReadRepository.GetByIdAsync(request.Id);
+        public async Task<UploadProductImagesCommandResponse> Handle(UploadProductImagesCommandRequest request, CancellationToken cancellationToken)
+        {
+            var images = await _storageService.UploadAsync("product-images", request.Files);
 
-			var images = await _storageService.UploadAsync("product-images", request.Files);
+            await _productService.UploadProductImageAsync(request.Id, images);
 
-			await _productImageFileWriteRepository.AddRangeAsync(images.Select(f => new ProductImageFile()
-			{
-				FileName = f.fileName,
-				Path = f.path,
-				Storage = _storageService.StorageName,
-				Products = new List<Product>() { productFromDb }
-			}).ToList());
-
-			await _productImageFileWriteRepository.SaveAsync();
-
-			return new();
-		}
-	}
+            return new();
+        }
+    }
 }

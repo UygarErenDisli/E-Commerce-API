@@ -35,7 +35,7 @@ namespace E_Commerce.Persistence.Repositories
 			}
 			return query.AsQueryable();
 		}
-		public async Task<T> GetSingleAsync(Expression<Func<T, bool>> filter, bool tracking = true)
+		public async Task<T?> GetSingleAsync(Expression<Func<T, bool>> filter, bool tracking = true)
 		{
 			var query = Table.AsQueryable();
 			if (!tracking)
@@ -44,7 +44,7 @@ namespace E_Commerce.Persistence.Repositories
 			}
 			return await query.FirstOrDefaultAsync(filter);
 		}
-		public async Task<T> GetByIdAsync(string id, bool tracking = true)
+		public async Task<T?> GetByIdAsync(string id, bool tracking = true)
 		{
 			var query = Table.AsQueryable();
 			if (!tracking)

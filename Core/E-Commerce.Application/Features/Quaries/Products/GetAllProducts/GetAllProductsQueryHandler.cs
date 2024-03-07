@@ -1,45 +1,28 @@
-﻿using E_Commerce.Application.DTOs.Products;
-using E_Commerce.Application.Repositories;
+﻿using E_Commerce.Application.Abstractions.Services.Product;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace E_Commerce.Application.Features.Quaries.Products.GetAllProducts
 {
-	public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQueryRequest, GetAllProductsQueryResponse>
-	{
-		private readonly IProductReadRepository _productReadRepository;
-		private readonly ILogger<GetAllProductsQueryHandler> _logger;
-		public GetAllProductsQueryHandler(IProductReadRepository productReadRepository, ILogger<GetAllProductsQueryHandler> logger)
-		{
-			_productReadRepository = productReadRepository;
-			_logger = logger;
-		}
+    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQueryRequest, GetAllProductsQueryResponse>
+    {
+        private readonly IProductService _productService;
+        private readonly ILogger<GetAllProductsQueryHandler> _logger;
 
-		public async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
-		{
-			_logger.LogInformation("Requested products count: {ProductCount}", request.PageSize);
-			var totalCount = _productReadRepository.GetAll().Count();
-			List<ListProductsDTO> products =
-			[
-				.. _productReadRepository
-				.GetAll(false)
-				.OrderBy(p => p.CreatedDate)
-				.Skip((request.PageIndex * request.PageSize))
-				.Take(request.PageSize)
-				.Select(p => new ListProductsDTO
-				{
-					Id = $"{p.Id}",
-					Name = p.Name,
-					Stock = p.Stock,
-					Price = p.Price,
-					CreatedDate = p.CreatedDate,
-					UpdatedDate = p.UpdatedDate,
-					ProductImages = p.ProductImages
+        public GetAllProductsQueryHandler(IProductService productService, ILogger<GetAllProductsQueryHandler> logger)
+        {
+            _productService = productService;
+            _logger = logger;
+        }
 
-				})
-			];
+        public async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Requested products count: {ProductCount}", request.PageSize);
 
-			return new() { Products = products, TotalCount = totalCount };
-		}
-	}
+            var totalCount = await _productService.GetTotalOrdersCountAsync();
+            var products = _productService.GetProducts(request.PageIndex, request.PageSize);
+
+            return new() { Products = products, TotalCount = totalCount };
+        }
+    }
 }

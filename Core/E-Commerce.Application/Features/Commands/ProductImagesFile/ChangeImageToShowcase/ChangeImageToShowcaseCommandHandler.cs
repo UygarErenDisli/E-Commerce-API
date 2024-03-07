@@ -1,46 +1,23 @@
-﻿using E_Commerce.Application.Exceptions;
-using E_Commerce.Application.Repositories;
+﻿using E_Commerce.Application.Abstractions.Services.Product;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace E_Commerce.Application.Features.Commands.ProductImagesFile.ChangeImageToShowcase
 {
-	public class ChangeImageToShowcaseCommandHandler : IRequestHandler<ChangeImageToShowcaseCommandRequest, ChangeImageToShowcaseCommandResponse>
-	{
-		private readonly IProductWriteRepository _productWriteRepository;
+    public class ChangeImageToShowcaseCommandHandler : IRequestHandler<ChangeImageToShowcaseCommandRequest, ChangeImageToShowcaseCommandResponse>
+    {
+        private readonly IProductService _productService;
 
-		public ChangeImageToShowcaseCommandHandler(IProductWriteRepository productWriteRepository)
-		{
-			_productWriteRepository = productWriteRepository;
-		}
+        public ChangeImageToShowcaseCommandHandler(IProductService productService)
+        {
+            _productService = productService;
+        }
 
-		public async Task<ChangeImageToShowcaseCommandResponse> Handle(ChangeImageToShowcaseCommandRequest request, CancellationToken cancellationToken)
-		{
-			var product = await _productWriteRepository.Table.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == Guid.Parse(request.ProductId));
+        public async Task<ChangeImageToShowcaseCommandResponse> Handle(ChangeImageToShowcaseCommandRequest request, CancellationToken cancellationToken)
+        {
+            await _productService.UpdateProductShowcaseImageAsync(request.ProductId, request.ImageId);
 
-			if (product == null)
-			{
-				throw new ProductNotFoundException();
-			}
+            return new();
 
-			var lastShowcaseImage = product.ProductImages.FirstOrDefault(i => i.IsShowCaseImage == true);
-			if (lastShowcaseImage != null)
-			{
-				lastShowcaseImage.IsShowCaseImage = false;
-			}
-
-			var image = product.ProductImages.FirstOrDefault(i => i.Id == Guid.Parse(request.ImageId));
-			if (image == null)
-			{
-				throw new ProductImageNotFoundException();
-			}
-
-			image!.IsShowCaseImage = true;
-
-			await _productWriteRepository.SaveAsync();
-
-			return new();
-
-		}
-	}
+        }
+    }
 }
