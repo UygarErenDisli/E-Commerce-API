@@ -55,10 +55,9 @@ namespace E_Commerce.Persistence.Services
 		}
 		public async Task<List<ListOrderDTO>> GetAllOrdersAsync(int pageIndex, int pageSize)
 		{
-			var query = GetIncludedQuery();
+			var orders = GetOrderQueries(pageIndex, pageSize, true);
 
-			var data = await query
-				.Skip(pageIndex * pageSize).Take(pageSize)
+			var data = await orders
 				.Select(order => new ListOrderDTO()
 				{
 					Id = order.Id.ToString(),
@@ -76,30 +75,30 @@ namespace E_Commerce.Persistence.Services
 		}
 		public async Task<SingleDetailedOrderDTO> GetOrderByIdAsync(string id)
 		{
-			var query = GetIncludedQuery();
+			var orders = GetOrderQueries(0, 0, false);
 
-			var data = await query.FirstOrDefaultAsync(o => o.Id == Guid.Parse(id)) ?? throw new OrderNotFoundException();
+			var order = await orders.FirstOrDefaultAsync(o => o.Id == Guid.Parse(id)) ?? throw new OrderNotFoundException();
 			var output = new SingleDetailedOrderDTO()
 			{
-				Id = data.Id.ToString(),
-				OrderCode = data.OrderCode,
-				CreatedDate = data.CreatedDate,
-				Description = data.Description,
-				UserEmail = data.Basket.User.Email!,
-				UserName = data.Basket.User.UserName!,
-				IsCompleted = data.IsCompleted,
-				IsCanceled = data.IsCanceled,
-				ReasonforCancellation = !string.IsNullOrEmpty(data.ReasonforCancellation) ? data.ReasonforCancellation : "No Reason Given For Cancellation",
-				TotalPrice = data.Basket.BasketItems.Sum(i => i.Product.Price * i.Quantity),
+				Id = order.Id.ToString(),
+				OrderCode = order.OrderCode,
+				CreatedDate = order.CreatedDate,
+				Description = order.Description,
+				UserEmail = order.Basket.User.Email!,
+				UserName = order.Basket.User.UserName!,
+				IsCompleted = order.IsCompleted,
+				IsCanceled = order.IsCanceled,
+				ReasonforCancellation = !string.IsNullOrEmpty(order.ReasonforCancellation) ? order.ReasonforCancellation : "No Reason Given For Cancellation",
+				TotalPrice = order.Basket.BasketItems.Sum(i => i.Product.Price * i.Quantity),
 				Address = new()
 				{
-					City = data.City,
-					Country = data.Country,
-					State = data.State,
-					Street = data.Street,
-					ZipCode = data.ZipCode,
+					City = order.City,
+					Country = order.Country,
+					State = order.State,
+					Street = order.Street,
+					ZipCode = order.ZipCode,
 				},
-				BasketItems = data.Basket.BasketItems.Select(bi => new BasketItemDTO()
+				BasketItems = order.Basket.BasketItems.Select(bi => new BasketItemDTO()
 				{
 					Price = bi.Product.Price,
 					ProductId = bi.Product.Id.ToString(),
@@ -174,74 +173,42 @@ namespace E_Commerce.Persistence.Services
 				throw new OrderNotFoundException();
 			}
 		}
-		private IQueryable<OrderQuery> GetIncludedQuery()
+		private IQueryable<OrderQuery> GetOrderQueries(int pageIndex, int pageSize, bool paginate)
 		{
-			var includedOrderQuery = _orderReadRepository.Table
-				.Include(o => o.Basket)
-				.ThenInclude(b => b.BasketItems)
-				.ThenInclude(bi => bi.Product)
-				.Include(o => o.Basket)
-				.ThenInclude(b => b.User)
-				.Include(o => o.Address);
+			var includedOrderQuery = !paginate ? GetIncludedOrders() : GetIncludedOrders().Skip(pageIndex * pageSize).Take(pageSize);
 
-
-			var completedOrderQuery = from order in includedOrderQuery
-									  join completedOrder in _completedOrderReadRepository.Table
-									  on order.Id equals completedOrder.OrderId into completedOrderJoinedTable
-									  from includedCompleteOrder in completedOrderJoinedTable.DefaultIfEmpty()
-									  select new
-									  {
-										  order.Id,
-										  order.Basket,
-										  order.CreatedDate,
-										  order.OrderCode,
-										  order.Description,
-										  order.Address.State,
-										  order.Address.City,
-										  order.Address.Country,
-										  order.Address.ZipCode,
-										  order.Address.Street,
-										  IsCompleted = includedCompleteOrder != null,
-									  };
-
-
-			var canceledOrderQuery = from order in includedOrderQuery
-									 join canceledOrder in _canceledOrderReadRepository.Table
-									 on order.Id equals canceledOrder.OrderId into canceledOrderJoinedTable
-									 from includedCanceledOrder in canceledOrderJoinedTable.DefaultIfEmpty()
-									 select new
-									 {
-										 order.Id,
-										 order.Basket,
-										 order.CreatedDate,
-										 order.OrderCode,
-										 IsCanceled = includedCanceledOrder != null,
-										 Reason = includedCanceledOrder != null ? includedCanceledOrder.Reason : ""
-									 };
-
-			var output = from co in completedOrderQuery
-						 join ca in canceledOrderQuery
-						 on co.Id equals ca.Id into caJoinedTable
-						 from order in caJoinedTable.DefaultIfEmpty()
-						 orderby order.CreatedDate
-						 select new OrderQuery()
+			var orders = from order in includedOrderQuery
+						 from completedOrder in _completedOrderReadRepository.Table.Where(completedOrder => completedOrder.OrderId == order.Id).DefaultIfEmpty()
+						 from canceledOrder in _canceledOrderReadRepository.Table.Where(canceledOrder => canceledOrder.OrderId == order.Id).DefaultIfEmpty()
+						 select new OrderQuery
 						 {
 							 Id = order.Id,
 							 Basket = order.Basket,
 							 CreatedDate = order.CreatedDate,
 							 OrderCode = order.OrderCode,
-							 ZipCode = co.ZipCode,
-							 Street = co.Street,
-							 City = co.City,
-							 Country = co.Country,
-							 State = co.State,
-							 Description = co.Description,
-							 IsCompleted = co.IsCompleted,
-							 IsCanceled = order.IsCanceled,
-							 ReasonforCancellation = order.Reason,
+							 Description = order.Description,
+							 State = order.Address.State,
+							 City = order.Address.City,
+							 Country = order.Address.Country,
+							 ZipCode = order.Address.ZipCode,
+							 Street = order.Address.Street,
+							 IsCompleted = completedOrder != null,
+							 IsCanceled = canceledOrder != null,
+							 ReasonforCancellation = canceledOrder != null ? canceledOrder.Reason : ""
 						 };
 
-			return output;
+			return orders;
+		}
+		private IQueryable<Order> GetIncludedOrders()
+		{
+			return _orderReadRepository.Table
+				.Include(o => o.Basket)
+				.ThenInclude(b => b.BasketItems)
+				.ThenInclude(bi => bi.Product)
+				.Include(o => o.Basket)
+				.ThenInclude(b => b.User)
+				.Include(o => o.Address)
+				.OrderBy(order => order.CreatedDate);
 		}
 		private class OrderQuery
 		{
